@@ -14,6 +14,18 @@ The pages are static, single-file vanilla HTML/CSS/JS with no build step at
 serve time and no external CDN dependencies. They install as a standalone PWA
 (manifest + four icons).
 
+## PIN gate
+
+The site is gated behind a 4-digit PIN ("phone unlock" UX). Data is
+encrypted at build time with AES-256-GCM, key derived from the PIN via
+PBKDF2-HMAC-SHA256 (200_000 iterations). The HTML pages contain no
+plaintext data; on load they fetch `<page>.data.enc.json`, prompt for
+the PIN, derive the key client-side via WebCrypto, decrypt, and render.
+
+This is **not** strong security — 10_000 possible PINs are brute-forceable
+in ~17 min by anyone determined. It stops casual readers, not motivated
+attackers. PIN-cached in `sessionStorage` so refreshes don't re-prompt.
+
 ## Rebuilding
 
 The static pages are generated from:
@@ -26,12 +38,13 @@ The static pages are generated from:
 To regenerate after editing any of those:
 
 ```bash
-./regen.sh           # runs build.py with the repo-root .venv
-# or
-python3 build.py
+PIN=<4 digits> ./regen.sh    # runs build.py + encrypt.py
 ```
 
-Outputs: `index.html`, `people.html`, `manifest.webmanifest`.
+Outputs: `index.html`, `people.html`, `manifest.webmanifest`,
+`index.data.enc.json`, `people.data.enc.json`. The HTML files have
+their inline data scripts emptied and a phone-style unlock screen
+injected before `</body>`.
 
 The Wed (workshop) timeline is hard-coded in `build.py::workshop_slots()` since
 the Squarespace program HTML only carries the two-day main conference.
