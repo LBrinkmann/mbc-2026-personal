@@ -402,21 +402,34 @@ SECTION_HEADERS = [
 
 
 def split_md_block(body: str) -> dict:
-    """Detect bulleted vs paragraph body.
+    """Detect bulleted vs paragraph body, preserving any lead-in prose.
 
-    Returns {'kind': 'bullets'|'paragraph', 'items': [...]}.
+    Returns {'kind': 'bullets'|'paragraph'|'mixed',
+             'lead': '<markdown prose before the first bullet>',
+             'items': [...]}.
+    A `### subheader` inside `lead` is stripped (acts as a section divider
+    between lead and bullets in source markdown).
     """
-    lines = [ln.rstrip() for ln in body.strip().splitlines() if ln.strip()]
-    if lines and all(re.match(r"^\s*-\s+", ln) for ln in lines):
-        bullets = []
-        for ln in lines:
-            bullets.append(re.sub(r"^\s*-\s+", "", ln))
-        return {"kind": "bullets", "items": bullets}
-    # mixed: peel any leading bullets, then treat rest as paragraph
-    if any(re.match(r"^\s*-\s+", ln) for ln in lines):
-        return {"kind": "bullets",
-                "items": bulletify(body)}
-    return {"kind": "paragraph", "items": [body.strip()]}
+    raw = body.strip()
+    raw_lines = raw.splitlines()
+    # find first bullet line
+    first_bullet = next(
+        (i for i, ln in enumerate(raw_lines) if re.match(r"^\s*-\s+", ln)),
+        None,
+    )
+    if first_bullet is None:
+        return {"kind": "paragraph", "lead": "", "items": [raw]}
+
+    lead_raw = "\n".join(raw_lines[:first_bullet]).strip()
+    # Drop trailing H3 sub-header that just labels the bullet list
+    # (e.g. "### Project-by-project") so the rendered lead stays prose-only.
+    lead_lines = [ln for ln in lead_raw.splitlines()
+                  if not re.match(r"^\s*###\s+", ln)]
+    lead = "\n".join(lead_lines).strip()
+
+    bullets = bulletify("\n".join(raw_lines[first_bullet:]))
+    kind = "mixed" if lead else "bullets"
+    return {"kind": kind, "lead": lead, "items": bullets}
 
 
 def parse_person(md_path: Path) -> dict:
@@ -477,6 +490,7 @@ def parse_person(md_path: Path) -> dict:
         "methods": sections.get("Methodological signature", "").strip(),
         "collaborators": bulletify(sections.get("Collaborators of note", "")),
         "connections_kind": connections_block["kind"],
+        "connections_lead": connections_block.get("lead", ""),
         "connections_items": connections_block["items"],
         "notes": sections.get("Notes", "").strip(),
     }
@@ -758,6 +772,10 @@ CSS_PEOPLE = """
   .connections ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.55; }
   .connections ul li { margin-bottom: 6px; }
   .connections strong { color: #0f2a55; }
+  .connections p:first-child em {
+    font-style: italic; color: #0f2a55; font-weight: 500;
+    display: block; padding: 2px 0 4px;
+  }
 """
 
 JS_SHARED = """
@@ -1219,11 +1237,17 @@ function renderPerson(p) {{
   const summaryHtml = p.summary
     ? `<section><h4>Research summary</h4><p>${{inlineMd(p.summary)}}</p></section>` : '';
   let connBody = '';
+  if (p.connections_lead) {{
+    // Render lead-in prose (hook + summary paragraph) as one or more <p>.
+    const leadParas = p.connections_lead.split(/\\n\\s*\\n/)
+      .map(s => s.trim()).filter(Boolean);
+    connBody += leadParas.map(t => `<p>${{inlineMd(t)}}</p>`).join('');
+  }}
   if (p.connections_items && p.connections_items.length) {{
-    if (p.connections_kind === 'bullets') {{
-      connBody = `<ul>${{p.connections_items.map(t => `<li>${{inlineMd(t)}}</li>`).join('')}}</ul>`;
+    if (p.connections_kind === 'paragraph') {{
+      connBody += p.connections_items.map(t => `<p>${{inlineMd(t)}}</p>`).join('');
     }} else {{
-      connBody = p.connections_items.map(t => `<p>${{inlineMd(t)}}</p>`).join('');
+      connBody += `<ul>${{p.connections_items.map(t => `<li>${{inlineMd(t)}}</li>`).join('')}}</ul>`;
     }}
   }}
   const connHtml = connBody

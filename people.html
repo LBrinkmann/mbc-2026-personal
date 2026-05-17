@@ -150,6 +150,10 @@
   .connections ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.55; }
   .connections ul li { margin-bottom: 6px; }
   .connections strong { color: #0f2a55; }
+  .connections p:first-child em {
+    font-style: italic; color: #0f2a55; font-weight: 500;
+    display: block; padding: 2px 0 4px;
+  }
 
 </style>
 </head>
@@ -254,11 +258,17 @@ function renderPerson(p) {
   const summaryHtml = p.summary
     ? `<section><h4>Research summary</h4><p>${inlineMd(p.summary)}</p></section>` : '';
   let connBody = '';
+  if (p.connections_lead) {
+    // Render lead-in prose (hook + summary paragraph) as one or more <p>.
+    const leadParas = p.connections_lead.split(/\n\s*\n/)
+      .map(s => s.trim()).filter(Boolean);
+    connBody += leadParas.map(t => `<p>${inlineMd(t)}</p>`).join('');
+  }
   if (p.connections_items && p.connections_items.length) {
-    if (p.connections_kind === 'bullets') {
-      connBody = `<ul>${p.connections_items.map(t => `<li>${inlineMd(t)}</li>`).join('')}</ul>`;
+    if (p.connections_kind === 'paragraph') {
+      connBody += p.connections_items.map(t => `<p>${inlineMd(t)}</p>`).join('');
     } else {
-      connBody = p.connections_items.map(t => `<p>${inlineMd(t)}</p>`).join('');
+      connBody += `<ul>${p.connections_items.map(t => `<li>${inlineMd(t)}</li>`).join('')}</ul>`;
     }
   }
   const connHtml = connBody
