@@ -29,6 +29,45 @@ INDEX_MD = PEOPLE_DIR / "_mbc_speakers_index.md"
 
 
 # --------------------------------------------------------------------------- #
+# Tier markers — hand-curated match scoring                                    #
+# --------------------------------------------------------------------------- #
+# ★ "priority" — closest fit / must-talk
+# ● "strong"   — substantive multi-project overlap
+# (slug omitted) → no marker
+TIERS: dict[str, str] = {
+    # Priority — attending 2026
+    "tom-griffiths": "priority",
+    "marcel-binz": "priority",
+    "nori-jacoby": "priority",
+    "danica-dillion": "priority",
+    "christopher-summerfield": "priority",
+    "indira-sen": "priority",
+    "kinga-makovi": "priority",
+    "eric-schulz": "priority",
+    "saeedeh-mohammadi": "priority",
+    "thore-graepel": "priority",
+    "raja-marjieh": "priority",  # invited but cannot attend; keep marker
+    # Priority — 2024 alumni, not attending (kept for cross-conf reference)
+    "moritz-hardt": "priority",
+    "krishna-gummadi": "priority",
+    "joel-leibo": "priority",
+    "james-evans": "priority",
+    "jean-francois-bonnefon": "priority",
+    # Strong — attending 2026
+    "jessica-thompson": "strong",
+    "andrea-baronchelli": "strong",
+    "yannik-keller": "strong",
+    "yaomin-jiang": "strong",
+    # Strong — 2024 alumni
+    "meeyoung-cha": "strong",
+}
+
+
+def tier_of(slug: str) -> str:
+    return TIERS.get(slug, "")
+
+
+# --------------------------------------------------------------------------- #
 # Name normalisation                                                          #
 # --------------------------------------------------------------------------- #
 
@@ -654,6 +693,9 @@ CSS_PROGRAM = """
   .slot .body .item { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
   .slot .body .item:last-child { border-bottom: none; }
   .slot .body .item .head-line { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  .slot .body .item .tier { font-size: 13px; line-height: 1; margin-right: 4px; vertical-align: middle; }
+  .slot .body .item .tier-priority { color: #d4a226; }
+  .slot .body .item .tier-strong   { color: var(--accent); font-size: 9px; }
   .slot .body .item .time-mini { font-size: 12px; color: var(--mute); font-variant-numeric: tabular-nums; flex-shrink: 0; }
   .slot .body .item .name { font-weight: 600; font-size: 14px; }
   .slot .body .item .name a { color: var(--accent); }
@@ -671,6 +713,14 @@ CSS_PEOPLE = """
   .card details > summary::-webkit-details-marker { display: none; }
   .card .head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
   .card .name { font-weight: 600; font-size: 15px; }
+  .card .tier {
+    font-size: 15px; line-height: 1; flex-shrink: 0;
+    margin-right: -4px;
+  }
+  .card .tier-priority { color: #d4a226; }
+  .card .tier-strong   { color: var(--accent); font-size: 9px; transform: translateY(-2px); }
+  .card[data-tier="priority"] { border-color: #e4c074; box-shadow: 0 0 0 1px rgba(212,162,38,0.15) inset; }
+  .card[data-tier="strong"]   { border-color: #b8c9e2; }
   .card .badge {
     font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
     padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
@@ -774,11 +824,13 @@ def lookup_slug(name: str, name_to_slug: dict) -> str:
 
 
 def render_index(days: dict, name_to_slug: dict) -> str:
-    # Inject slug for each item if we have one
+    # Inject slug + tier for each item if we have one
     for key, slots in days.items():
         for s in slots:
             for it in s["items"]:
-                it["slug"] = lookup_slug(it.get("speaker", ""), name_to_slug)
+                slug = lookup_slug(it.get("speaker", ""), name_to_slug)
+                it["slug"] = slug
+                it["tier"] = tier_of(slug) if slug else ""
 
     data = {
         "days": [
@@ -897,12 +949,17 @@ function renderSlot(s, idx) {{
       ${{s.items.map(it => {{
         const search = escAttr(((it.speaker||'')+' '+(it.aff||'')+' '+(it.title||'')+' '+(it.abstract||'')).toLowerCase());
         const isPanel = it.is_panel || (it.title && it.title.toLowerCase().includes('panel discussion') && !it.speaker);
+        const tierMark = it.tier === 'priority'
+          ? `<span class="tier tier-priority" title="Priority match">★</span>`
+          : (it.tier === 'strong'
+             ? `<span class="tier tier-strong" title="Strong match">●</span>`
+             : '');
         const nameHtml = it.speaker
           ? (it.slug
-              ? `<span class="name"><a href="people.html#${{escapeHtml(it.slug)}}">${{escapeHtml(it.speaker)}}</a></span>`
+              ? `<span class="name">${{tierMark}}<a href="people.html#${{escapeHtml(it.slug)}}">${{escapeHtml(it.speaker)}}</a></span>`
               : `<span class="name">${{escapeHtml(it.speaker)}}</span>`)
           : '';
-        return `<div class="item${{isPanel?' panel-row':''}}" data-search="${{search}}">
+        return `<div class="item${{isPanel?' panel-row':''}}" data-tier="${{escapeHtml(it.tier||'')}}" data-search="${{search}}">
           <div class="head-line">
             ${{it.time ? `<span class="time-mini">${{escapeHtml(it.time)}}</span>` : ''}}
             ${{nameHtml}}
@@ -1064,7 +1121,8 @@ def render_people(people: list[dict], idx: dict) -> str:
         talk_title = p.get("talk_title") or meta.get("talk_title", "")
         out_people.append({**p, "day_badge": badge,
                            "index_date": meta.get("date", ""),
-                           "talk_title": talk_title})
+                           "talk_title": talk_title,
+                           "tier": tier_of(p.get("slug", ""))})
 
     # Sort: by day order (Mon, Tue, Wed, then 2024 / unknown), then name
     order = {"Mon": 0, "Tue": 1, "Wed": 2, "2024": 3, "": 4}
@@ -1179,10 +1237,16 @@ function renderPerson(p) {{
     ? `<span class="badge ${{badgeClass(p.day_badge)}}">${{escapeHtml(p.day_badge)}}</span>` : '';
   const talkHtml = p.talk_title
     ? `<div class="talk">${{escapeHtml(p.talk_title)}}</div>` : '';
+  const tierMark = p.tier === 'priority'
+    ? `<span class="tier tier-priority" title="Priority match for Levin's work" aria-label="priority match">★</span>`
+    : (p.tier === 'strong'
+       ? `<span class="tier tier-strong" title="Strong match for Levin's work" aria-label="strong match">●</span>`
+       : '');
 
-  return `<li class="card" id="${{escapeHtml(p.slug)}}" data-day="${{escapeHtml(p.day_badge || '')}}" data-search="${{escAttr(searchBlob)}}">
+  return `<li class="card" id="${{escapeHtml(p.slug)}}" data-day="${{escapeHtml(p.day_badge || '')}}" data-tier="${{escapeHtml(p.tier || '')}}" data-search="${{escAttr(searchBlob)}}">
     <details><summary>
       <div class="head">
+        ${{tierMark}}
         <span class="name">${{escapeHtml(p.name)}}</span>
         ${{badge}}
         <span class="chevron-row"><span class="chevron">›</span></span>

@@ -137,6 +137,9 @@
   .slot .body .item { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
   .slot .body .item:last-child { border-bottom: none; }
   .slot .body .item .head-line { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  .slot .body .item .tier { font-size: 13px; line-height: 1; margin-right: 4px; vertical-align: middle; }
+  .slot .body .item .tier-priority { color: #d4a226; }
+  .slot .body .item .tier-strong   { color: var(--accent); font-size: 9px; }
   .slot .body .item .time-mini { font-size: 12px; color: var(--mute); font-variant-numeric: tabular-nums; flex-shrink: 0; }
   .slot .body .item .name { font-weight: 600; font-size: 14px; }
   .slot .body .item .name a { color: var(--accent); }
@@ -264,12 +267,17 @@ function renderSlot(s, idx) {
       ${s.items.map(it => {
         const search = escAttr(((it.speaker||'')+' '+(it.aff||'')+' '+(it.title||'')+' '+(it.abstract||'')).toLowerCase());
         const isPanel = it.is_panel || (it.title && it.title.toLowerCase().includes('panel discussion') && !it.speaker);
+        const tierMark = it.tier === 'priority'
+          ? `<span class="tier tier-priority" title="Priority match">★</span>`
+          : (it.tier === 'strong'
+             ? `<span class="tier tier-strong" title="Strong match">●</span>`
+             : '');
         const nameHtml = it.speaker
           ? (it.slug
-              ? `<span class="name"><a href="people.html#${escapeHtml(it.slug)}">${escapeHtml(it.speaker)}</a></span>`
+              ? `<span class="name">${tierMark}<a href="people.html#${escapeHtml(it.slug)}">${escapeHtml(it.speaker)}</a></span>`
               : `<span class="name">${escapeHtml(it.speaker)}</span>`)
           : '';
-        return `<div class="item${isPanel?' panel-row':''}" data-search="${search}">
+        return `<div class="item${isPanel?' panel-row':''}" data-tier="${escapeHtml(it.tier||'')}" data-search="${search}">
           <div class="head-line">
             ${it.time ? `<span class="time-mini">${escapeHtml(it.time)}</span>` : ''}
             ${nameHtml}

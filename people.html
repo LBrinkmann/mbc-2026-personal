@@ -106,6 +106,14 @@
   .card details > summary::-webkit-details-marker { display: none; }
   .card .head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
   .card .name { font-weight: 600; font-size: 15px; }
+  .card .tier {
+    font-size: 15px; line-height: 1; flex-shrink: 0;
+    margin-right: -4px;
+  }
+  .card .tier-priority { color: #d4a226; }
+  .card .tier-strong   { color: var(--accent); font-size: 9px; transform: translateY(-2px); }
+  .card[data-tier="priority"] { border-color: #e4c074; box-shadow: 0 0 0 1px rgba(212,162,38,0.15) inset; }
+  .card[data-tier="strong"]   { border-color: #b8c9e2; }
   .card .badge {
     font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
     padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
@@ -265,10 +273,16 @@ function renderPerson(p) {
     ? `<span class="badge ${badgeClass(p.day_badge)}">${escapeHtml(p.day_badge)}</span>` : '';
   const talkHtml = p.talk_title
     ? `<div class="talk">${escapeHtml(p.talk_title)}</div>` : '';
+  const tierMark = p.tier === 'priority'
+    ? `<span class="tier tier-priority" title="Priority match for Levin's work" aria-label="priority match">★</span>`
+    : (p.tier === 'strong'
+       ? `<span class="tier tier-strong" title="Strong match for Levin's work" aria-label="strong match">●</span>`
+       : '');
 
-  return `<li class="card" id="${escapeHtml(p.slug)}" data-day="${escapeHtml(p.day_badge || '')}" data-search="${escAttr(searchBlob)}">
+  return `<li class="card" id="${escapeHtml(p.slug)}" data-day="${escapeHtml(p.day_badge || '')}" data-tier="${escapeHtml(p.tier || '')}" data-search="${escAttr(searchBlob)}">
     <details><summary>
       <div class="head">
+        ${tierMark}
         <span class="name">${escapeHtml(p.name)}</span>
         ${badge}
         <span class="chevron-row"><span class="chevron">›</span></span>
