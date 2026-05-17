@@ -47,6 +47,7 @@ TIERS: dict[str, str] = {
     "saeedeh-mohammadi": "priority",
     "thore-graepel": "priority",
     "raja-marjieh": "priority",  # invited but cannot attend; keep marker
+    "raphael-koster": "priority",  # not at MBC; bridge via Summerfield
     # Priority — 2024 alumni, not attending (kept for cross-conf reference)
     "moritz-hardt": "priority",
     "krishna-gummadi": "priority",
