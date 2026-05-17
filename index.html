@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fafaf8">
+<title>MBC 2026 — Program · Personal</title>
+<meta name="description" content="Personal program one-pager for the Machine+Behavior Conference 2026 + Behavioral Clones Workshop, Harnack House, Berlin.">
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MBC 2026">
+<style>
+
+  :root {
+    --fg: #1a1a1a; --mute: #6a6a6a; --bg: #fafaf8; --card: #fff;
+    --border: #e3e3e0; --accent: #2a5da8; --accent-soft: #eaf0fa;
+    --now-bg: #fff4d4; --now-border: #d4a226; --now-fg: #6e5210;
+    --past: #b5b5b5;
+    /* kind colors */
+    --session-bg: #fff; --session-fg: #1a1a1a;
+    --lightning-bg: #fff2e8; --lightning-fg: #8a3d12;
+    --panel-bg: #efe6f5; --panel-fg: #4a2768;
+    --poster-bg: #e8f3e5; --poster-fg: #2c5a23;
+    --break-bg: #f4f1ea; --break-fg: #6e5210;
+    --lunch-bg: #fef6db; --lunch-fg: #6e5210;
+    --dinner-bg: #fbe5e0; --dinner-fg: #802b1d;
+    --framing-bg: #eef0f4; --framing-fg: #2a3a55;
+  }
+
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--fg);
+    font-size: 16px; line-height: 1.5;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 64px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .hero h1 { font-size: 24px; margin: 0 0 4px; line-height: 1.25; }
+  .hero .meta { color: var(--mute); font-size: 14px; margin-bottom: 16px; }
+  .navbar { display: flex; gap: 6px; margin-bottom: 12px; }
+  .navbar a {
+    flex: 1; text-align: center;
+    padding: 8px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--fg); font-size: 14px; font-weight: 600;
+  }
+  .navbar a.active {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+
+  .status {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin: 0 0 16px;
+    display: flex; align-items: center; gap: 12px; min-height: 64px;
+  }
+  .status.live { background: var(--now-bg); border-color: var(--now-border); color: var(--now-fg); }
+  .status .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--mute); }
+  .status.live .dot { background: var(--now-border); animation: pulse 1.6s infinite ease-in-out; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .status .text { flex: 1; min-width: 0; }
+  .status .text .label { font-size: 11px; letter-spacing: 0.7px; text-transform: uppercase; font-weight: 600; color: var(--mute); }
+  .status.live .text .label { color: var(--now-border); }
+  .status .text .now { font-size: 16px; font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; }
+  .status .text .next { font-size: 13px; color: var(--mute); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
+  .status.live .text .next { color: var(--now-fg); opacity: 0.75; }
+
+  .toolbar { position: sticky; top: 0; background: var(--bg); z-index: 10;
+    padding: 10px 0 8px; margin: 0 -16px 6px; padding-left: 16px; padding-right: 16px;
+  }
+  .toolbar input { width: 100%; padding: 11px 14px; font: inherit; border: 1px solid var(--border); border-radius: 8px; background: var(--card); outline: none; -webkit-appearance: none; }
+  .toolbar input:focus { border-color: var(--accent); }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pill {
+    padding: 5px 11px; font-size: 13px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--card); color: var(--mute);
+    cursor: pointer; font-family: inherit;
+  }
+  .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .actions { margin-top: 6px; display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--mute); }
+  .actions .count { margin-left: auto; }
+
+  footer { color: var(--mute); font-size: 13px; margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
+  footer a { color: var(--accent); }
+
+  @media (min-width: 600px) {
+    .hero h1 { font-size: 30px; }
+    body { font-size: 17px; }
+  }
+
+
+  .timeline { list-style: none; padding: 0; margin: 8px 0 0; }
+  .slot { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; background: var(--card); overflow: hidden; }
+  .slot.hidden { display: none; }
+  .slot.now { box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-color: var(--now-border); background: var(--now-bg); }
+  .slot.past { opacity: 0.55; }
+  .slot.past .summary .what, .slot.past summary .what { color: var(--past); }
+
+  /* kind-coding (subtle backgrounds, only when not now) */
+  .slot.kind-lightning:not(.now) { background: var(--lightning-bg); }
+  .slot.kind-lightning:not(.now) .what { color: var(--lightning-fg); }
+  .slot.kind-panel:not(.now) { background: var(--panel-bg); }
+  .slot.kind-panel:not(.now) .what { color: var(--panel-fg); }
+  .slot.kind-poster:not(.now) { background: var(--poster-bg); }
+  .slot.kind-poster:not(.now) .what { color: var(--poster-fg); }
+  .slot.kind-break:not(.now) { background: var(--break-bg); }
+  .slot.kind-break:not(.now) .what { color: var(--break-fg); }
+  .slot.kind-lunch:not(.now) { background: var(--lunch-bg); }
+  .slot.kind-lunch:not(.now) .what { color: var(--lunch-fg); }
+  .slot.kind-dinner:not(.now) { background: var(--dinner-bg); }
+  .slot.kind-dinner:not(.now) .what { color: var(--dinner-fg); }
+  .slot.kind-framing:not(.now) { background: var(--framing-bg); }
+  .slot.kind-framing:not(.now) .what { color: var(--framing-fg); }
+
+  .slot details > summary, .slot .summary {
+    list-style: none; cursor: pointer; padding: 12px 14px;
+    display: flex; gap: 14px; align-items: center; user-select: none;
+  }
+  .slot details > summary::-webkit-details-marker { display: none; }
+  .slot .summary { cursor: default; }
+  .slot .time { flex-shrink: 0; width: 110px; font-size: 13px; color: var(--mute); font-variant-numeric: tabular-nums; }
+  .slot.now .time { color: var(--now-fg); font-weight: 600; }
+  .slot .what { flex: 1; font-size: 15px; line-height: 1.35; font-weight: 600; }
+  .slot .chevron { flex-shrink: 0; color: var(--mute); font-size: 14px; transition: transform 0.18s; }
+  .slot details[open] > summary .chevron { transform: rotate(90deg); }
+
+  .slot .body { padding: 0 14px 12px 14px; border-top: 1px solid rgba(0,0,0,0.06); }
+  .slot .body .item { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .slot .body .item:last-child { border-bottom: none; }
+  .slot .body .item .head-line { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+  .slot .body .item .time-mini { font-size: 12px; color: var(--mute); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .slot .body .item .name { font-weight: 600; font-size: 14px; }
+  .slot .body .item .name a { color: var(--accent); }
+  .slot .body .item .aff { color: var(--mute); font-size: 13px; }
+  .slot .body .item .title { font-size: 14px; color: #2a2a2a; margin-top: 3px; }
+  .slot .body .item.panel-row .title { font-style: italic; color: var(--panel-fg); }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>MBC 2026 — Program</h1>
+    <div class="meta">
+      Machine+Behavior Conference · 18–19 May 2026 · Behavioral Clones Workshop 20 May<br>
+      Harnack House, Berlin · times Europe/Berlin (CEST)
+    </div>
+  </div>
+
+  <div class="navbar">
+    <a class="active" href="index.html">Program</a>
+    <a href="people.html">Speakers</a>
+  </div>
+
+  <div class="status" id="status">
+    <div class="dot"></div>
+    <div class="text">
+      <div class="label" id="statusLabel">Loading…</div>
+      <div class="now" id="statusNow">—</div>
+      <div class="next" id="statusNext"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Search by name, affiliation, title…" autocomplete="off">
+    <div class="pills" id="dayPills"></div>
+    <div class="actions">
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <ol class="timeline" id="timeline"></ol>
+
+  <footer>
+    Personal one-pager. Roster + commentary by Levin Brinkmann.<br>
+    Canonical site: <a href="https://machinebehavior.science/program-1" target="_blank" rel="noopener">machinebehavior.science/program-1</a>
+    · workshop: <a href="https://machinebehavior.science/behavioral-clones-ws" target="_blank" rel="noopener">behavioral-clones-ws</a>
+  </footer>
+</div>
+
+<script type="application/json" id="data">{"days": [{"key": "mon", "label": "Mon 18 May", "date": "2026-05-18", "slots": [{"time": "08:45 – 09:30", "title": "Registration & Coffee", "kind": "break", "items": []}, {"time": "09:30 – 09:50", "title": "Welcome & Opening Remarks", "kind": "framing", "items": []}, {"time": "09:50 – 10:50", "title": "Session 1", "kind": "session", "items": [{"speaker": "Christopher Summerfield", "aff": "University of Oxford, UK AI Security Institute", "title": "New Equilibria Between Humans and Machines", "abstract": "Narratives in AI safety often reference the intentionality of AI companies or AI systems themselves. But our future will be determined by the emergence of new equilibria between humans and technology. These represent new fixed points for our beliefs, preferences, learning, privacy, discourse, and relationships. I will discuss what the emerging study of human-AI interaction tells us about what these equilibria will be.", "time": "09:50 – 10:05", "slug": "christopher-summerfield"}, {"speaker": "Laura Weidinger", "aff": "Google DeepMind", "title": "Why AI Safety Evaluation Needs Humans", "abstract": "A comprehensive view of AI safety entails measuring the impacts of human-AI interaction -- however, human-AI interaction is still a nascent field. Behavioural sciences can help close this gap. Simulations are a tempting approach to addressing interaction-based safety questions, but they have significant limitations. I discuss the hazards of overrelying on simulations for AI safety and propose ways to weave real observations and synthetic approaches together towards a more robust AI safety evaluation science.", "time": "10:05 – 10:20", "slug": "laura-weidinger"}, {"speaker": "", "aff": "", "title": "Panel Discussion | Moderator: Jean-François Bonnefon", "abstract": "", "time": "10:20 – 10:50", "is_panel": true, "slug": ""}]}, {"time": "11:00 – 11:30", "title": "Coffee Break", "kind": "break", "items": []}, {"time": "11:30 – 12:30", "title": "Session 2", "kind": "session", "items": [{"speaker": "Hause Lin", "aff": "Massachusetts Institute of Technology", "title": "Persuading Voters Using Human–AI Dialogues", "abstract": "There is great public concern regarding the potential use of generative AI for political persuasion and the resulting impacts on elections and democracy. We inform these concerns using preregistered experiments to assess large language models’ ability to influence voters’ attitudes. In the context of the 2024 U.S. presidential election, the 2025 Canadian federal election, and the 2025 Polish presidential election, we randomly assigned participants to have a conversation with an AI model that advocated for one of the top two candidates. We observed significant treatment effects on candidate preference that are larger than typically observed from traditional video ads. We also document large persuasion effects on Massachusetts residents’ support for a ballot measure legalizing psychedelics. Examining the persuasion strategies used by the models suggests they persuade with relevant facts and evidence, rather than employing sophisticated psychological persuasion techniques. Not all facts and evidence presented, however, were accurate; across all three countries, the AIs advocating for candidates on the political right made more inaccurate claims. Together, these findings highlight the potential for AI to influence voters and the important role it might play in future elections.", "time": "11:30 – 11:45", "slug": "hause-lin"}, {"speaker": "Eva Wiese", "aff": "Technical University Berlin", "title": "Mind the Machines: Social Interactions with Artificial Agents", "abstract": "As artificial agents, such as robots and AI, become increasingly embedded in daily life, we investigate how fundamental social-cognitive mechanisms shape human engagement with these systems. We examine when and why people attribute intentions and social relevance to machines, using dynamic, reciprocal interaction protocols that capture social behavior as it naturally unfolds. By integrating these paradigms with neurophysiological measures, such as EEG, fNIRS and eye-tracking, we identify the conditions under which artificial agents recruit human social brain networks. The findings reveal that flexible social dynamics shape how humans interact with AI, surpassing traditional ideas about human relationships with machines.", "time": "11:45 – 12:00", "slug": "eva-wiese"}, {"speaker": "", "aff": "", "title": "Panel Discussion | Moderator: Jean-François Bonnefon", "abstract": "", "time": "12:00 – 12:30", "is_panel": true, "slug": ""}]}, {"time": "12:30 – 13:45", "title": "Lunch | Restaurant+Laue Saal", "kind": "lunch", "items": []}, {"time": "13:45 – 14:45", "title": "Session 3", "kind": "session", "items": [{"speaker": "Kate Devlin", "aff": "King's College London", "title": "", "abstract": "", "time": "13:45 – 14:00", "slug": "kate-devlin"}, {"speaker": "Brian Earp", "aff": "National University of Singapore", "title": "", "abstract": "", "time": "14:00 – 14:15", "slug": "brian-earp"}, {"speaker": "", "aff": "", "title": "Panel Discussion | Moderator: Azim Shariff", "abstract": "", "time": "14:15 – 14:45", "is_panel": true, "slug": ""}]}, {"time": "14:45 – 15:15", "title": "Coffee Break", "kind": "break", "items": []}, {"time": "15:15 – 16:15", "title": "Lightning Talks", "kind": "lightning", "items": [{"speaker": "Ines Terrucha and Nils Köbis", "aff": "", "title": "All Agents, All Dilemmas, Everything, All at Once! A Mega-Study on Delegation to AI in Social Dilemmas", "abstract": "", "slug": ""}, {"speaker": "Stratis Tsirtsis, Chris Russell, Brent Mittelstadt and Sandra Wachter", "aff": "", "title": "Emergent Biases in AI-Mediated Opinion Formation", "abstract": "", "slug": ""}, {"speaker": "Anita Keshmirian, Babak Hemmatian, Razan Baltaji, Hadi Asghari and Lav Varshney", "aff": "", "title": "Collective Moral Judgment in LLMs", "abstract": "", "slug": ""}, {"speaker": "Shota Shiiku, Raja Marjieh, Manuel Anglada-Tort and Nori Jacoby", "aff": "", "title": "Collective Creativity in Human–AI Hybrid Societies", "abstract": "", "slug": ""}, {"speaker": "Eva Wiese and Tobias Feldmann-Wüstefeld", "aff": "", "title": "Allocation of Cognitive Resources in Human-AI Collaboration", "abstract": "", "slug": "eva-wiese"}, {"speaker": "Aoi Naito, Yuxuan Li, Faria Huq and Hirokazu Shirado", "aff": "", "title": "Hybrid Human–AI Collective Reasoning under Distributed Knowledge", "abstract": "", "slug": ""}, {"speaker": "Qiankun Zhong, Thomas Eisenmann, Julian Garcia and Iyad Rahwan", "aff": "", "title": "Group Selection as a Safeguard Against AI Substitution", "abstract": "", "slug": ""}, {"speaker": "Katerina Manoli, Janet Pauketat and Jacy Reese Anthis", "aff": "", "title": "The AI Double Standard: Humans Judge All AIs for the Actions of One", "abstract": "", "slug": ""}, {"speaker": "Moritz Reis, Florian Reis and Wilfried Kunde", "aff": "", "title": "Symptom Reporting Quality Is Reduced When Individuals Believe to Interact with AI Instead of Human Physicians", "abstract": "", "slug": ""}]}, {"time": "16:15 – 17:00", "title": "Poster Session", "kind": "poster", "items": [{"speaker": "Ines Terrucha and Nils Köbis", "aff": "", "title": "All Agents, All Dilemmas, Everything, All at Once! A Mega-Study on Delegation to AI in Social Dilemmas", "abstract": "", "slug": ""}, {"speaker": "Stratis Tsirtsis, Chris Russell, Brent Mittelstadt and Sandra Wachter", "aff": "", "title": "Emergent Biases in AI-Mediated Opinion Formation", "abstract": "", "slug": ""}, {"speaker": "Anita Keshmirian, Babak Hemmatian, Razan Baltaji, Hadi Asghari and Lav Varshney", "aff": "", "title": "Collective Moral Judgment in LLMs", "abstract": "", "slug": ""}, {"speaker": "Shota Shiiku, Raja Marjieh, Manuel Anglada-Tort and Nori Jacoby", "aff": "", "title": "Collective Creativity in Human–AI Hybrid Societies", "abstract": "", "slug": ""}, {"speaker": "Eva Wiese and Tobias Feldmann-Wüstefeld", "aff": "", "title": "Allocation of Cognitive Resources in Human-AI Collaboration", "abstract": "", "slug": "eva-wiese"}, {"speaker": "Aoi Naito, Yuxuan Li, Faria Huq and Hirokazu Shirado", "aff": "", "title": "Hybrid Human–AI Collective Reasoning under Distributed Knowledge", "abstract": "", "slug": ""}, {"speaker": "Qiankun Zhong, Thomas Eisenmann, Julian Garcia and Iyad Rahwan", "aff": "", "title": "Group Selection as a Safeguard Against AI Substitution", "abstract": "", "slug": ""}, {"speaker": "Katerina Manoli, Janet Pauketat and Jacy Reese Anthis", "aff": "", "title": "The AI Double Standard: Humans Judge All AIs for the Actions of One", "abstract": "", "slug": ""}, {"speaker": "Moritz Reis, Florian Reis and Wilfried Kunde", "aff": "", "title": "Symptom Reporting Quality Is Reduced When Individuals Believe to Interact with AI Instead of Human Physicians", "abstract": "", "slug": ""}, {"speaker": "Julian Berger and Martin Paul Fritze", "aff": "", "title": "Cultural Novelty and Success in AI Art: Evidence from 74,000 Botto Artworks", "abstract": "", "slug": ""}, {"speaker": "Pierce Veitch, Scott Claessens and Jim A.C. Everett", "aff": "", "title": "Perceived Intergroup Competition and Public Consent for AI Deregulation", "abstract": "", "slug": ""}, {"speaker": "Tamineh Godazgar, Nico Mutzner and Taha Yasseri", "aff": "", "title": "Beyond Strategy: The Cost of Discriminating Against AI", "abstract": "", "slug": ""}, {"speaker": "Janniek Wester, Nadine Lavan, Mathias Scharinger and Pauline Larrouy-Maestri", "aff": "", "title": "Neural Correlates of Perceived Humanness in Voice", "abstract": "", "slug": ""}, {"speaker": "Paola R. Peña and Benjamin R. Cowan", "aff": "", "title": "Division of Labour in Human-AI Collaborative Communication", "abstract": "", "slug": ""}, {"speaker": "Paul Rosmer", "aff": "", "title": "AI Agents and the Value of Humans", "abstract": "", "slug": ""}, {"speaker": "Markus Kneer", "aff": "", "title": "Value Forks: A Novel Complication for AI Alignment", "abstract": "", "slug": ""}, {"speaker": "Daniel Juhász Vigild, Andreas Bjerre-Nielsen, Laust Hvas Mortensen and Vedran Sekara", "aff": "", "title": "Selective Decline in Trustworthiness of Public Institutions Across Implementations of Governmental AI", "abstract": "", "slug": ""}, {"speaker": "Hao Cui, Guillaume Falmagne and Taha Yasseri", "aff": "", "title": "Tuning the Influence of AI Modifies Human–AI Collective Belief Dynamics", "abstract": "", "slug": ""}, {"speaker": "Petter Holme, Shuyue Hu, Gengrui Zhang, Hao Li and Zhen Wang", "aff": "", "title": "The Decision Intelligence of Humans and Machines", "abstract": "", "slug": ""}, {"speaker": "Artur Klingbeil, Philipp Schreck and Nils Köbis", "aff": "", "title": "AI-Induced Discrimination – Ignoring Sexism When Consequences Matter", "abstract": "", "slug": ""}, {"speaker": "Ritsaart Reimann and Markus Kneer", "aff": "", "title": "In the Loop, Out of Sync: Moral Cognition in Human-Robot Interactions", "abstract": "", "slug": ""}, {"speaker": "Mengfan Zhang, Kathrin Kostorz, Dominik Pegler, Cindy Lor, Filip Melinscak and Frank Scharnowski", "aff": "", "title": "Representations of Feared Stimuli across Brain, Behavior, and Computer Vision Models", "abstract": "", "slug": ""}]}, {"time": "17:00 – 17:45", "title": "Session 4", "kind": "session", "items": [{"speaker": "Allan Dafoe & Thore Graepel", "aff": "Google DeepMind; University College London", "title": "The Cooperative AI Opportunity for Machine Behavior", "abstract": "As agentic and generally intelligent AI systems proliferate, we face a critical imperative: enabling and accelerating cooperative success among these agents, humans, and our civic institutions. We review the importance of this Cooperative AI North Star and its deep intersection with the core scientific problems of Machine Behavior. This keynote explores actionable pathways toward super-human dyadic cooperation, proposing privacy-preserving negotiation and novel protocols to solve fundamental commitment problems. We will examine the theoretical limits of cooperative skill, the viability of the \"super-cooperative AGI\" hypothesis, and the verifiable infrastructure required to sustain healthy agent ecosystems. Finally, we assess the normative competence of our current AI systems and evaluate how we might leverage AI as an intelligent scaffold to enrich our democratic processes.", "time": "17:00 – 17:30", "slug": "allan-dafoe"}, {"speaker": "", "aff": "", "title": "Panel Discussion | Moderator: Iyad Rahwan", "abstract": "", "time": "17:30 – 17:45", "is_panel": true, "slug": ""}]}, {"time": "18:00 – 20:00", "title": "Dinner | Restaurant+Laue Saal", "kind": "dinner", "items": []}]}, {"key": "tue", "label": "Tue 19 May", "date": "2026-05-19", "slots": [{"time": "09:00 – 09:30", "title": "Morning Coffee", "kind": "break", "items": []}, {"time": "09:30 – 10:30", "title": "Session 1", "kind": "session", "items": [{"speaker": "Eric Schulz", "aff": "Helmholtz Munich", "title": "", "abstract": "", "time": "09:30 – 09:45", "slug": "eric-schulz"}, {"speaker": "Kinga Makovi", "aff": "New York University Abu Dhabi", "title": "AI Reliance in Work, Education, and Personal Life", "abstract": "Existing AI dependency scales treat AI reliance as context-free, and theorize AI dependence using the same framework that was developed to measure addiction to substances and gambling, often adopted to the Internet, social media, and smartphones. But generative AI differs from these prior technologies: users interact with LLMs as conversational partners, which blur the boundary between tool use and consulting an expert or confidant. Additionally, LLMs' potential negative consequences differ from those of addiction and have been articulated by researchers and technologists. For instance, Anthropic considers disempowerment situations to articulate these consequences. We crate domain specific measures of AI reliance in the context of work, education, and personal life, and show correlational evidence with measures of psychological well-being, AI literacy, and AI trust in preparation for a large longitudinal study.", "time": "09:45 – 10:00", "slug": "kinga-makovi"}, {"speaker": "", "aff": "", "title": "Panel Discussion | Moderator: Taha Yasseri", "abstract": "", "time": "10:00 – 10:30", "is_panel": true, "slug": ""}]}, {"time": "10:30 – 11:00", "title": "Coffee Break", "kind": "break", "items": []}, {"time": "11:00 – 12:00", "title": "Session 2", "kind": "session", "items": [{"speaker": "Andrea Baronchelli", "aff": "City St George's, University of London", "title": "Collective Behaviour in LLM Populations: Emergent Social Conventions and Bias", "abstract": "While much attention has focused on individual models, AI agents are increasingly interacting at scale. Using a minimal framework for maximum interpretability, we show that populations of LLMs converge on shared conventions through local interactions alone, and that this process can generate systematic biases at the collective level even when no individual model is initially biased. These findings challenge current practice, which evaluates AI safety at the level of single models, and suggest that treating AI as a collective phenomenon is key to understanding and governing it.", "time": "11:00 – 11:15", "slug": "andrea-baronchelli"}, {"speaker": "Douglas Guilbeault", "aff": "Stanford University", "title": "AI Agents Replicate Cultural Dynamics Despite Non-human Psychologies", "abstract": "In this talk, I present evidence from two distinct experimental paradigms that cultural dynamics replicate across AI and Human social systems, despite AI exhibiting qualitatively non-human perceptions and decision functions. Specifically, I examine two social network experiments involving the social construction of meaning – namely, the Name Game involving the emergence of shared conventions to enable coordination, and the Grouping Game, involving the interactive formation of a shared labeling system for categorizing a continuum of novel, abstract shapes. Interacting networks of AI agents reproduce the known macro effects of network size and structure on the outcomes of each experiment. Yet, in the Name Game, the coordination behavior of AI agents is much more statistically optimized than corresponding human participants; and in the Grouping Game, AI agents prefer labels that deviate from human descriptions, while also inventing entirely new labels, some of which combine characters from multiple, distinct languages. I conclude by emphasizing two implications: (1) that macro cultural dynamics may be more readily generalizable than psychological processes across human and AI systems, and (2) that the mechanisms of statistical optimization driving AI learning can yield distinct categories and world models that are potentially incommensurable with human meaning systems, evoking numerous concerns for the problem of aligning AI with human goals and values.", "time": "11:15 – 11:30", "slug": "douglas-guilbeault"}, {"speaker": "", "aff": "", "title": "Panel Discussion | Moderator: Azim Shariff", "abstract": "", "time": "11:30 – 12:00", "is_panel": true, "slug": ""}]}, {"time": "12:15 – 13:30", "title": "Lunch | Restaurant+Laue Saal", "kind": "lunch", "items": []}, {"time": "13:30 – 14:15", "title": "Session 3: Editor's Panel | Moderator: Iyad Rahwan", "kind": "panel", "items": [{"speaker": "Giacomo Ariani", "aff": "Nature Human Behaviour", "title": "", "abstract": "", "slug": ""}, {"speaker": "Mary Elizabeth Sutherland", "aff": "Nature", "title": "", "abstract": "", "slug": ""}, {"speaker": "Liesbeth Venema", "aff": "Nature Machine Intelligence", "title": "", "abstract": "", "slug": ""}]}, {"time": "14:15 – 15:15", "title": "Lightning Talks", "kind": "lightning", "items": [{"speaker": "Mengchen Dong, Hiromu Yakura, Omar Sherif, Jean-François Bonnefon and Iyad Rahwan", "aff": "", "title": "Shadow Adoption Under AI Transparency: When Disclosure Rules Incentivize Covert GenAI Use", "abstract": "", "slug": ""}, {"speaker": "Bernardo Villegas, Xi Wang, Yung-Hsuan Wu, Katherine Collins and Umang Bhatt", "aff": "", "title": "Second-Order Externalities of AI Assistance on Knowledge Transfer", "abstract": "", "slug": ""}, {"speaker": "Tobias Werner, Hans-Theo Normann, Nina Rulié and Olaf Stypa", "aff": "", "title": "Delegate Pricing Decisions to an Algorithm? Experimental Evidence", "abstract": "", "slug": ""}, {"speaker": "Laurène Vaugrante, Anietta Weckauff and Thilo Hagendorff", "aff": "", "title": "Emergently Misaligned Language Models Show Behavioral Self-Awareness That Shifts With Subsequent Realignment", "abstract": "", "slug": ""}, {"speaker": "Celina Kacperski, Roberto Ulloa and Juhi Kulshrestha", "aff": "", "title": "Who Opts Out of Generative AI? Evidence from a Behavioral Experiment on Conversational AI Avoidance", "abstract": "", "slug": ""}, {"speaker": "Emil Bakkensen Johansen and Oliver Baumann", "aff": "", "title": "Imitating AI Agents Increase Diversity in Homogeneous Information Ecosystems but Can Reduce It in Heterogeneous Ones", "abstract": "", "slug": ""}, {"speaker": "Petter Holme and Shuyue Hu", "aff": "", "title": "Decision-Making of Humans and Machines in the Wild", "abstract": "", "slug": ""}, {"speaker": "Daniel Relihan and Brian Hughes", "aff": "", "title": "Calibrating the Machine: Population-Level Human Benchmarks for Assessing Extremist Bias in Large Language Models", "abstract": "", "slug": ""}, {"speaker": "Valentin Kriegmair and Dirk Wulff", "aff": "", "title": "Machine Individuality: Multi-Level Variance Partitioning Reveals Stable Behavioral Idiosyncrasies in Large Language Models", "abstract": "", "slug": "valentin-kriegmair"}, {"speaker": "Izabela Skoczeń and Kacper Poradzisz", "aff": "", "title": "What Is Reasonable for Artificial Intelligence?", "abstract": "", "slug": ""}]}, {"time": "15:15 – 16:00", "title": "Poster Session", "kind": "poster", "items": [{"speaker": "Mengchen Dong, Hiromu Yakura, Omar Sherif, Jean-François Bonnefon and Iyad Rahwan", "aff": "", "title": "Shadow Adoption Under AI Transparency: When Disclosure Rules Incentivize Covert GenAI Use", "abstract": "", "slug": ""}, {"speaker": "Bernardo Villegas, Xi Wang, Yung-Hsuan Wu, Katherine Collins and Umang Bhatt", "aff": "", "title": "Second-Order Externalities of AI Assistance on Knowledge Transfer", "abstract": "", "slug": ""}, {"speaker": "Tobias Werner, Hans-Theo Normann, Nina Rulié and Olaf Stypa", "aff": "", "title": "Delegate Pricing Decisions to an Algorithm? Experimental Evidence", "abstract": "", "slug": ""}, {"speaker": "Laurène Vaugrante, Anietta Weckauff and Thilo Hagendorff", "aff": "", "title": "Emergently Misaligned Language Models Show Behavioral Self-Awareness That Shifts With Subsequent Realignment", "abstract": "", "slug": ""}, {"speaker": "Celina Kacperski, Roberto Ulloa and Juhi Kulshrestha", "aff": "", "title": "Who Opts Out of Generative AI? Evidence from a Behavioral Experiment on Conversational AI Avoidance", "abstract": "", "slug": ""}, {"speaker": "Emil Bakkensen Johansen and Oliver Baumann", "aff": "", "title": "Imitating AI Agents Increase Diversity in Homogeneous Information Ecosystems but Can Reduce It in Heterogeneous Ones", "abstract": "", "slug": ""}, {"speaker": "Petter Holme and Shuyue Hu", "aff": "", "title": "Decision-Making of Humans and Machines in the Wild", "abstract": "", "slug": ""}, {"speaker": "Daniel Relihan and Brian Hughes", "aff": "", "title": "Calibrating the Machine: Population-Level Human Benchmarks for Assessing Extremist Bias in Large Language Models", "abstract": "", "slug": ""}, {"speaker": "Valentin Kriegmair and Dirk Wulff", "aff": "", "title": "Machine Individuality: Multi-Level Variance Partitioning Reveals Stable Behavioral Idiosyncrasies in Large Language Models", "abstract": "", "slug": "valentin-kriegmair"}, {"speaker": "Izabela Skoczeń and Kacper Poradzisz", "aff": "", "title": "What Is Reasonable for Artificial Intelligence?", "abstract": "", "slug": ""}, {"speaker": "Jan Batzner, Lion Wedel, Anna-Theresa Mayer, Lk Seiling, Jakob Ohme, Stefan Schmid, Volker Stocker and Gjergji Kasneci", "aff": "", "title": "Model Agreement is Not Ground Truth: Why We Need to Reconsider VLM-as-a-Judge Paradigms", "abstract": "", "slug": ""}, {"speaker": "Nikolas Zöller, Nathan Fu, Vito Trianni, Ralf H.J.M. Kurvers and Stefan M. Herzog", "aff": "", "title": "How Advice Source (AI, Human, Hybrid) and Timing Shape Physicians’ Diagnostic Accuracy, Uptake, and Confidence", "abstract": "", "slug": ""}, {"speaker": "Franziska Weeber, Vera Neplenbroek, Jan Batzner and Sebastian Padó", "aff": "", "title": "One Persona, Many Cues, Different Results: How Sociodemographic Cues Impact LLM Personalization", "abstract": "", "slug": ""}, {"speaker": "Nico Mutzner, Taha Yasseri and Heiko Rauhut", "aff": "", "title": "Normative Equivalence in Human–AI Cooperation: Behaviour, Not Identity, Drives Cooperation in Mixed-Agent Groups", "abstract": "", "slug": ""}, {"speaker": "Sanne Peereboom, Inga Schwabe and Bennett Kleinberg", "aff": "", "title": "The Hall of Mirrors: Large Language Models as Individuals or Populations?", "abstract": "", "slug": ""}, {"speaker": "Taisiia Tikhomirova and Dirk Wulff", "aff": "", "title": "Where Meaning Lives: Layer-Wise Accessibility of Psycholinguistic Features in Encoder and Decoder Language Models", "abstract": "", "slug": "taisiia-tikhomirova"}, {"speaker": "Saeedeh Mohammadi and Taha Yasseri", "aff": "", "title": "Harnessing Human and Machine Collective Intelligence for Content Moderation", "abstract": "", "slug": "saeedeh-mohammadi"}, {"speaker": "Matthew Bone, Fabian Stephany and Maria del Rio-Chanona", "aff": "", "title": "Monocultural Biases in Labor Markets: Benchmarking LLMs vs Humans", "abstract": "", "slug": ""}, {"speaker": "Younes Jeddi, Jose Segovia-Martin and Emile Servan-Schreiber", "aff": "", "title": "Crowdsourced vs LLM Forecasting: Evidence for the Accuracy-Correlation Effect", "abstract": "", "slug": ""}, {"speaker": "Jana Friedrichsen, Julia Schwarz and Michel Clement", "aff": "", "title": "When Music is Made by AI: Effects on Preferences and Willingness to Pay", "abstract": "", "slug": ""}, {"speaker": "Ole Teutloff, Merlin Fuchs and Fabian Braesemann", "aff": "", "title": "How AI Reshapes the Global Division of Work and Impacts Workers Livelihoods", "abstract": "", "slug": ""}]}, {"time": "16:00 – 16:45", "title": "Session 4", "kind": "session", "items": [{"speaker": "Tom Griffiths", "aff": "Princeton University", "title": "Mapping the Jagged Edges of AI with the Tools of Cognitive Science", "abstract": "Current artificial intelligence systems demonstrate surprising amount of heterogeneity in their abilities, displaying superhuman competence in some tasks but puzzling limitations in others. I will argue that the tools we need for understanding this heterogeneity can be found in cognitive science, where researchers have spent decades developing theoretical and empirical methods for making sense of the capabilities of intelligent systems. I will highlight ways in which empirical methods from cognitive science — tools for studying similarity, categorization, and reasoning — can shed light on the capabilities of AI systems.", "time": "16:00 – 16:30", "slug": "tom-griffiths"}, {"speaker": "", "aff": "", "title": "Discussion | Moderator: Azim Shariff", "abstract": "", "time": "16:30 – 16:45", "is_panel": true, "slug": ""}]}, {"time": "16:45 – 17:00", "title": "Closing Remarks", "kind": "framing", "items": []}]}, {"key": "wed", "label": "Wed 20 May (Workshop)", "date": "2026-05-20", "slots": [{"time": "09:00 – 09:20", "title": "Welcome by Levin & Dirk", "kind": "framing", "items": []}, {"time": "09:20 – 09:50", "title": "Invited talk — Danica Dillion", "kind": "session", "items": [{"speaker": "Danica Dillion", "aff": "Complexity Science Hub / OSU", "title": "", "abstract": "", "slug": "danica-dillion"}]}, {"time": "09:50 – 10:10", "title": "Lightning talks (block A)", "kind": "lightning", "items": [{"speaker": "Indira Sen", "aff": "University of Mannheim", "title": "Evaluating Generative Social Simulations", "abstract": "", "slug": "indira-sen"}, {"speaker": "Jelena Meyer", "aff": "MPIB", "title": "When Reliability Misleads: Psychometric Scale Directionality Inflates Apparent Consistency in LLM Scale Responses", "abstract": "", "slug": ""}, {"speaker": "Daniel Relihan", "aff": "USC", "title": "Where Do LLM Outputs Fall Relative to Human Severity Assessments? A Distributional Calibration Framework", "abstract": "", "slug": ""}, {"speaker": "Sharif Kazemi", "aff": "World Bank Group", "title": "Machine-Augmented Social Simulation (MASS)", "abstract": "", "slug": "sharif-kazemi"}]}, {"time": "10:10 – 10:30", "title": "Break", "kind": "break", "items": []}, {"time": "10:30 – 11:45", "title": "Contributed talks (block 1)", "kind": "session", "items": [{"speaker": "Felipe Valencia-Clavijo", "aff": "Dataplicada", "title": "Anchoring as a Behavioral Clone of Human Judgment in LLMs", "abstract": "", "slug": "felipe-valencia-clavijo"}, {"speaker": "Valentin Kriegmair", "aff": "MPIB", "title": "Machine Individuality: Multi-Level Variance Partitioning Reveals Stable Behavioral Idiosyncrasies in LLMs", "abstract": "", "slug": "valentin-kriegmair"}, {"speaker": "Faezeh Fadaei", "aff": "University College Dublin", "title": "Gender Dynamics and Homophily in a Social Network of LLM Agents", "abstract": "", "slug": "faezeh-fadaei"}, {"speaker": "Louis Schiekiera", "aff": "Humboldt-Universität zu Berlin", "title": "Aligning Behavioral and Hidden-State Semantic Geometry in LLMs", "abstract": "", "slug": "louis-schiekiera"}]}, {"time": "11:45 – 12:05", "title": "Break", "kind": "break", "items": []}, {"time": "12:05 – 12:35", "title": "Invited talk — Marcel Binz", "kind": "session", "items": [{"speaker": "Marcel Binz", "aff": "Helmholtz Munich", "title": "", "abstract": "", "slug": "marcel-binz"}]}, {"time": "12:35 – 13:35", "title": "Lunch", "kind": "lunch", "items": []}, {"time": "13:35 – 14:10", "title": "Lightning talks (block B)", "kind": "lightning", "items": [{"speaker": "Jessica Thompson", "aff": "University of Oxford", "title": "Using behavioural cloning to accelerate human language learning", "abstract": "", "slug": "jessica-thompson"}, {"speaker": "Leonel Aguilar", "aff": "ETH Zürich", "title": "Beyond the Vessel: Ground-Truth Behavioural Traces for Foundational Models of Human Behaviour", "abstract": "", "slug": "leonel-aguilar"}, {"speaker": "Saeedeh Mohammadi", "aff": "University College Dublin", "title": "Bickering Machine: AI feedback enhances community-based content moderation", "abstract": "", "slug": "saeedeh-mohammadi"}, {"speaker": "Taisiia Tikhomirova", "aff": "MPIB", "title": "Where meaning lives: Layer-wise accessibility of psycholinguistic features", "abstract": "", "slug": "taisiia-tikhomirova"}, {"speaker": "Jan Pfänder", "aff": "Eawag", "title": "Predicting the effects of a megastudy with behavioral clones", "abstract": "", "slug": "jan-pfander"}]}, {"time": "14:10 – 14:40", "title": "Invited talk — Nori Jacoby", "kind": "session", "items": [{"speaker": "Nori Jacoby", "aff": "Cornell University", "title": "", "abstract": "", "slug": "nori-jacoby"}]}, {"time": "14:40 – 15:00", "title": "Break", "kind": "break", "items": []}, {"time": "15:00 – 16:15", "title": "Contributed talks (block 2)", "kind": "session", "items": [{"speaker": "Kristin Witte", "aff": "Helmholtz Munich", "title": "Evaluating Emotionally Loaded User-LLM Interactions Across Long Horizons", "abstract": "", "slug": "kristin-witte"}, {"speaker": "Maxime Saxena", "aff": "University College London", "title": "Reasoning Induced Bubbles in LLM Financial Markets", "abstract": "", "slug": "maxime-saxena"}, {"speaker": "Yannik Keller", "aff": "MPIB", "title": "Improving Long-Run Group Welfare Through AI-Managed Sanctioning Institutions", "abstract": "", "slug": "yannik-keller"}, {"speaker": "Yaomin Jiang", "aff": "MPIB", "title": "Emergent Strategic Communication in Goal-Optimized Language Agents", "abstract": "", "slug": "yaomin-jiang"}]}, {"time": "16:15 – 16:25", "title": "Break", "kind": "break", "items": []}, {"time": "16:25 – 17:45", "title": "Poster session", "kind": "poster", "items": []}, {"time": "17:45 – 18:15", "title": "Panel — Open Questions and the Future", "kind": "panel", "items": []}, {"time": "18:15 – 23:59", "title": "BBQ on the institute terrace", "kind": "dinner", "items": []}]}]}</script>
+<script>
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+  function escAttr(s){ return escapeHtml(s).replace(/\s+/g,' '); }
+  // Minimal inline markdown: **bold**, *italic*, `code`, [text](url).
+  // Operates AFTER escapeHtml so we are safe.
+  function inlineMd(s) {
+    s = escapeHtml(s);
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+                  '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s.,;:!?)]|$)/g,
+                  '$1<em>$2</em>');
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    return s;
+  }
+  function berlinNow() {
+    const fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Berlin', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    });
+    const parts = Object.fromEntries(fmt.formatToParts(new Date()).map(p => [p.type, p.value]));
+    return { dateStr: parts.year+'-'+parts.month+'-'+parts.day,
+             minutes: parseInt(parts.hour, 10) * 60 + parseInt(parts.minute, 10) };
+  }
+  function parseTimeRange(str) {
+    // "09:50 – 10:50" -> [590, 650]
+    const m = str.replace(/[–—-]+/g, '|').split('|').map(s => s.trim());
+    function toMin(t){ const x = t.match(/(\d{1,2}):(\d{2})/); return x ? +x[1]*60+ +x[2] : null; }
+    return [toMin(m[0]), toMin(m[1])];
+  }
+
+const DATA = JSON.parse(document.getElementById('data').textContent);
+let activeDay = (function(){
+  const { dateStr } = berlinNow();
+  const found = DATA.days.find(d => d.date === dateStr);
+  if (found) return found.key;
+  // before conference -> Mon; after -> Wed
+  if (dateStr < '2026-05-18') return 'mon';
+  if (dateStr > '2026-05-20') return 'wed';
+  return 'mon';
+})();
+let query = '';
+
+function kindClass(k) { return 'kind-' + (k || 'session'); }
+
+function renderPills() {
+  const wrap = document.getElementById('dayPills');
+  wrap.innerHTML = DATA.days.map(d =>
+    `<button class="pill${''}" data-day="${d.key}">${escapeHtml(d.label)}</button>`
+  ).join('');
+  Array.from(wrap.children).forEach(btn => {
+    if (btn.dataset.day === activeDay) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      activeDay = btn.dataset.day;
+      Array.from(wrap.children).forEach(b => b.classList.toggle('active', b === btn));
+      renderTimeline();
+      applyFilter();
+      updateStatus();
+    });
+  });
+}
+
+function renderSlot(s, idx) {
+  const hasItems = s.items && s.items.length > 0;
+  const cls = ['slot', kindClass(s.kind), `slot-${idx}`].join(' ');
+  const itemsHtml = hasItems ? `
+    <div class="body">
+      ${s.items.map(it => {
+        const search = escAttr(((it.speaker||'')+' '+(it.aff||'')+' '+(it.title||'')+' '+(it.abstract||'')).toLowerCase());
+        const isPanel = it.is_panel || (it.title && it.title.toLowerCase().includes('panel discussion') && !it.speaker);
+        const nameHtml = it.speaker
+          ? (it.slug
+              ? `<span class="name"><a href="people.html#${escapeHtml(it.slug)}">${escapeHtml(it.speaker)}</a></span>`
+              : `<span class="name">${escapeHtml(it.speaker)}</span>`)
+          : '';
+        return `<div class="item${isPanel?' panel-row':''}" data-search="${search}">
+          <div class="head-line">
+            ${it.time ? `<span class="time-mini">${escapeHtml(it.time)}</span>` : ''}
+            ${nameHtml}
+            ${it.aff ? `<span class="aff">${escapeHtml(it.aff)}</span>` : ''}
+          </div>
+          ${it.title ? `<div class="title">${escapeHtml(it.title)}</div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>` : '';
+  const inner = `
+    <div class="time">${escapeHtml(s.time)}</div>
+    <div class="what">${escapeHtml(s.title)}</div>
+    ${hasItems ? '<span class="chevron">›</span>' : ''}
+  `;
+  if (hasItems) return `<li class="${cls}" data-idx="${idx}"><details><summary>${inner}</summary>${itemsHtml}</details></li>`;
+  return `<li class="${cls}" data-idx="${idx}"><div class="summary">${inner}</div></li>`;
+}
+
+function currentDay() { return DATA.days.find(d => d.key === activeDay); }
+
+function renderTimeline() {
+  const day = currentDay();
+  document.getElementById('timeline').innerHTML = day.slots.map((s, i) => renderSlot(s, i)).join('');
+}
+
+function updateStatus() {
+  const { dateStr, minutes } = berlinNow();
+  const day = currentDay();
+  document.querySelectorAll('.slot').forEach(el => el.classList.remove('now','past'));
+
+  const status = document.getElementById('status');
+  const label = document.getElementById('statusLabel');
+  const now = document.getElementById('statusNow');
+  const next = document.getElementById('statusNext');
+
+  const isToday = dateStr === day.date;
+  let currentIdx = -1;
+  if (isToday) {
+    for (let i = 0; i < day.slots.length; i++) {
+      const [a,b] = parseTimeRange(day.slots[i].time);
+      if (a !== null && b !== null && minutes >= a && minutes < b) { currentIdx = i; break; }
+    }
+    day.slots.forEach((s,i) => {
+      const el = document.querySelector('.slot-'+i);
+      if (!el) return;
+      const [,b] = parseTimeRange(s.time);
+      if (i === currentIdx) {
+        el.classList.add('now');
+        const det = el.querySelector('details');
+        if (det && !det.hasAttribute('data-user-toggled')) det.open = true;
+      } else if (b !== null && minutes >= b) {
+        el.classList.add('past');
+      }
+    });
+  }
+
+  if (dateStr < '2026-05-18') {
+    status.classList.remove('live');
+    const dDay = new Date(day.date);
+    const dNow = new Date(dateStr);
+    const days = Math.ceil((dDay - dNow) / 86400000);
+    label.textContent = 'Coming up';
+    now.textContent = days === 1 ? 'Tomorrow' : ('In ' + days + ' days');
+    next.textContent = day.label + ' · ' + (day.slots[0] ? day.slots[0].time + ' · ' + day.slots[0].title : '');
+  } else if (dateStr > '2026-05-20') {
+    status.classList.remove('live');
+    label.textContent = 'Conference';
+    now.textContent = 'Concluded';
+    next.textContent = 'Thanks for joining.';
+  } else if (!isToday) {
+    status.classList.remove('live');
+    label.textContent = 'Selected day';
+    now.textContent = day.label;
+    next.textContent = (day.slots[0]?.time || '') + ' · ' + (day.slots[0]?.title || '');
+  } else if (currentIdx === -1) {
+    status.classList.remove('live');
+    if (day.slots.length && parseTimeRange(day.slots[0].time)[0] !== null && minutes < parseTimeRange(day.slots[0].time)[0]) {
+      label.textContent = 'Starts today';
+      const mins = parseTimeRange(day.slots[0].time)[0] - minutes;
+      now.textContent = 'In ' + mins + ' min';
+      next.textContent = day.slots[0].time + ' — ' + day.slots[0].title;
+    } else {
+      label.textContent = 'Today';
+      now.textContent = 'Between sessions';
+      // find next slot
+      let nx = null;
+      for (const s of day.slots) { const [a] = parseTimeRange(s.time); if (a !== null && a > minutes) { nx = s; break; } }
+      next.textContent = nx ? ('Next, ' + nx.time + ': ' + nx.title) : 'Day concluded.';
+    }
+  } else {
+    status.classList.add('live');
+    const s = day.slots[currentIdx];
+    const nx = day.slots[currentIdx+1];
+    label.textContent = 'Live now';
+    now.textContent = s.title;
+    next.textContent = nx ? ('Next, ' + nx.time + ': ' + nx.title) : '(last block of the day)';
+  }
+}
+
+function applyFilter() {
+  const q = query.trim().toLowerCase();
+  let total = 0;
+  document.querySelectorAll('.slot').forEach(slot => {
+    const items = slot.querySelectorAll('.body .item');
+    if (!q) {
+      items.forEach(it => it.style.display = '');
+      slot.classList.remove('hidden');
+      total += items.length;
+      return;
+    }
+    if (items.length === 0) {
+      const what = slot.querySelector('.what').textContent.toLowerCase();
+      slot.classList.toggle('hidden', !what.includes(q));
+      return;
+    }
+    let matches = 0;
+    items.forEach(it => {
+      const hit = it.dataset.search && it.dataset.search.includes(q);
+      it.style.display = hit ? '' : 'none';
+      if (hit) matches++;
+    });
+    if (matches > 0) {
+      slot.classList.remove('hidden');
+      total += matches;
+      const det = slot.querySelector('details');
+      if (det) det.open = true;
+    } else {
+      slot.classList.add('hidden');
+    }
+  });
+  document.getElementById('count').textContent = q ? (total + ' match' + (total===1?'':'es')) : '';
+}
+
+renderPills();
+renderTimeline();
+updateStatus();
+applyFilter();
+
+document.getElementById('q').addEventListener('input', e => { query = e.target.value; applyFilter(); });
+document.addEventListener('toggle', e => { if (e.target.tagName === 'DETAILS') e.target.setAttribute('data-user-toggled', '1'); }, true);
+setInterval(updateStatus, 60_000);
+</script>
+</body>
+</html>

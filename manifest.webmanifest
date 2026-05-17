@@ -1,0 +1,23 @@
+{
+  "name": "MBC 2026 \u2014 Personal",
+  "short_name": "MBC 2026",
+  "description": "Personal program + annotated speaker overview for the Machine+Behavior Conference 2026 and Behavioral Clones Workshop, Harnack House Berlin.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fafaf8",
+  "theme_color": "#2a5da8",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
