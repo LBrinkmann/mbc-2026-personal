@@ -375,25 +375,86 @@ window.addEventListener('hashchange', () => {
 });
 </script>
 
-<!-- Lock screen overlay (visible until PIN unlock) -->
-<div id="lockscreen" aria-hidden="false" style="position:fixed;inset:0;background:var(--bg,#fafaf8);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;color:#1a1a1a;">
-  <div style="font-size:15px;color:#6a6a6a;margin-bottom:8px;letter-spacing:0.6px;text-transform:uppercase;font-weight:600;">M+B 2026</div>
-  <div id="lockTitle" style="font-size:18px;font-weight:600;margin-bottom:24px;text-align:center;">Enter PIN</div>
-  <div id="pinDots" style="display:flex;gap:14px;margin-bottom:18px;">
-    <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+<!-- Lock screen overlay (on-screen number pad; no OS-keyboard dependency) -->
+<div id="lockscreen" aria-hidden="false">
+  <div class="lock-inner">
+    <div class="lock-brand">M+B 2026</div>
+    <div class="lock-title">Enter PIN</div>
+    <div id="pinDots" class="pin-dots">
+      <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+    </div>
+    <div id="pinMsg" class="pin-msg">&nbsp;</div>
+    <div class="pin-pad" id="pinPad" role="group" aria-label="PIN keypad">
+      <button class="pin-key" data-digit="1">1</button>
+      <button class="pin-key" data-digit="2">2</button>
+      <button class="pin-key" data-digit="3">3</button>
+      <button class="pin-key" data-digit="4">4</button>
+      <button class="pin-key" data-digit="5">5</button>
+      <button class="pin-key" data-digit="6">6</button>
+      <button class="pin-key" data-digit="7">7</button>
+      <button class="pin-key" data-digit="8">8</button>
+      <button class="pin-key" data-digit="9">9</button>
+      <button class="pin-key pin-key-blank" disabled tabindex="-1" aria-hidden="true"></button>
+      <button class="pin-key" data-digit="0">0</button>
+      <button class="pin-key pin-key-del" data-action="del" aria-label="Delete">⌫</button>
+    </div>
   </div>
-  <input id="pinInput" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"
-         aria-label="4-digit PIN"
-         style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;left:-9999px;">
-  <div id="pinMsg" style="font-size:13px;color:#6a6a6a;min-height:18px;margin-top:6px;">Tap to enter</div>
-  <button id="pinTap" style="position:absolute;inset:0;background:transparent;border:none;cursor:pointer;" aria-label="Focus PIN entry"></button>
 </div>
 <style>
-  #lockscreen .pin-dot { width:16px; height:16px; border-radius:50%; border:1.5px solid #b5b5b5; background:#fff; transition: background 0.15s, border-color 0.15s, transform 0.15s; }
-  #lockscreen .pin-dot.filled { background:#2a5da8; border-color:#2a5da8; transform: scale(1.08); }
+  #lockscreen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg, #fafaf8); color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0)
+             env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  #lockscreen .lock-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    padding: 24px 16px; width: 100%; max-width: 360px;
+  }
+  #lockscreen .lock-brand {
+    font-size: 12px; color: #6a6a6a; letter-spacing: 0.7px;
+    text-transform: uppercase; font-weight: 600;
+  }
+  #lockscreen .lock-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  #lockscreen .pin-dots { display: flex; gap: 16px; margin: 6px 0 4px; }
+  #lockscreen .pin-dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid #b5b5b5; background: #fff;
+    transition: background 0.12s, border-color 0.12s, transform 0.12s;
+  }
+  #lockscreen .pin-dot.filled {
+    background: #2a5da8; border-color: #2a5da8; transform: scale(1.1);
+  }
+  #lockscreen .pin-msg {
+    font-size: 13px; color: #6a6a6a; min-height: 18px;
+    margin-bottom: 4px; text-align: center;
+  }
+  #lockscreen .pin-pad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; width: 100%;
+  }
+  #lockscreen .pin-key {
+    border: 1px solid #e3e3e0; background: #fff; color: #1a1a1a;
+    border-radius: 50%; font: inherit; font-size: 26px; font-weight: 400;
+    aspect-ratio: 1 / 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-user-select: none;
+    transition: background 0.08s, transform 0.08s;
+  }
+  #lockscreen .pin-key:active { background: #eef1f6; transform: scale(0.96); }
+  #lockscreen .pin-key:disabled { visibility: hidden; }
+  #lockscreen .pin-key-del { font-size: 22px; color: #6a6a6a; }
   #lockscreen.shake { animation: shake 0.4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-8px);} 40%,80%{transform:translateX(8px);} }
-  #lockscreen.unlocked { opacity:0; pointer-events:none; transition: opacity 0.25s ease; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-8px); }
+    40%,80% { transform: translateX(8px); }
+  }
+  #lockscreen.unlocked { opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
 </style>
 
 <script>
@@ -402,21 +463,19 @@ window.addEventListener('hashchange', () => {
   const SK = 'mbc-pin-v1';
   const lock = document.getElementById('lockscreen');
   const dots = lock.querySelectorAll('.pin-dot');
-  const input = document.getElementById('pinInput');
-  const msg = document.getElementById('pinMsg');
-  const tap = document.getElementById('pinTap');
+  const msg  = document.getElementById('pinMsg');
+  const pad  = document.getElementById('pinPad');
   const dataTag = document.getElementById('data');
   const codeTag = document.getElementById('app-code');
   const encSrc = dataTag && dataTag.dataset.encSrc;
   if (!encSrc) { msg.textContent = 'Bootstrap error: no encrypted source.'; return; }
 
+  let pin = '';
+  let busy = false;
+
   function setDots(n) {
     dots.forEach((d, i) => d.classList.toggle('filled', i < n));
   }
-
-  function focusInput() { setTimeout(() => input.focus(), 50); }
-  tap.addEventListener('click', focusInput);
-  lock.addEventListener('click', focusInput);
 
   function b64ToBytes(b64) {
     const bin = atob(b64);
@@ -425,17 +484,14 @@ window.addEventListener('hashchange', () => {
     return out;
   }
 
-  async function deriveKey(pin, saltBytes, iter) {
+  async function deriveKey(pinStr, saltBytes, iter) {
     const enc = new TextEncoder();
     const baseKey = await crypto.subtle.importKey(
-      'raw', enc.encode(pin), { name: 'PBKDF2' }, false, ['deriveKey']
+      'raw', enc.encode(pinStr), { name: 'PBKDF2' }, false, ['deriveKey']
     );
     return crypto.subtle.deriveKey(
       { name: 'PBKDF2', salt: saltBytes, iterations: iter, hash: 'SHA-256' },
-      baseKey,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['decrypt']
+      baseKey, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
     );
   }
 
@@ -448,21 +504,19 @@ window.addEventListener('hashchange', () => {
     return encBlob;
   }
 
-  async function tryUnlock(pin) {
+  async function tryUnlock(pinStr) {
     msg.textContent = 'Unlocking…';
     try {
       const blob = await loadBlob();
       const salt = b64ToBytes(blob.kdf.salt_b64);
-      const iv = b64ToBytes(blob.cipher.iv_b64);
-      const ct = b64ToBytes(blob.cipher.ct_b64);
-      const key = await deriveKey(pin, salt, blob.kdf.iter);
+      const iv   = b64ToBytes(blob.cipher.iv_b64);
+      const ct   = b64ToBytes(blob.cipher.ct_b64);
+      const key  = await deriveKey(pinStr, salt, blob.kdf.iter);
       const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
       const text = new TextDecoder().decode(plain);
-      // Sanity: must be JSON parseable
-      JSON.parse(text);
-      // Inject and boot
+      JSON.parse(text); // sanity
       dataTag.textContent = text;
-      try { sessionStorage.setItem(SK, pin); } catch (e) {}
+      try { sessionStorage.setItem(SK, pinStr); } catch (e) {}
       lock.classList.add('unlocked');
       setTimeout(() => lock.remove(), 280);
       const newScript = document.createElement('script');
@@ -474,43 +528,61 @@ window.addEventListener('hashchange', () => {
     }
   }
 
-  function handleAttempt(pin) {
-    setDots(4);
-    tryUnlock(pin).then(ok => {
-      if (!ok) {
-        msg.textContent = 'Wrong PIN.';
-        lock.classList.add('shake');
-        try { sessionStorage.removeItem(SK); } catch (e) {}
-        setTimeout(() => {
-          lock.classList.remove('shake');
-          input.value = '';
-          setDots(0);
-          msg.textContent = 'Tap to try again';
-          focusInput();
-        }, 480);
-      }
-    });
+  function fail() {
+    msg.textContent = 'Wrong PIN.';
+    lock.classList.add('shake');
+    try { sessionStorage.removeItem(SK); } catch (e) {}
+    setTimeout(() => {
+      lock.classList.remove('shake');
+      pin = '';
+      setDots(0);
+      msg.textContent = ' ';
+      busy = false;
+    }, 480);
   }
 
-  input.addEventListener('input', () => {
-    const v = (input.value || '').replace(/\D/g, '').slice(0, 4);
-    input.value = v;
-    setDots(v.length);
-    if (v.length === 4) handleAttempt(v);
-    else msg.textContent = 'Enter your 4-digit PIN';
+  function attempt(pinStr) {
+    if (busy) return;
+    busy = true;
+    setDots(4);
+    tryUnlock(pinStr).then(ok => { if (!ok) fail(); });
+  }
+
+  function pressDigit(d) {
+    if (busy || pin.length >= 4) return;
+    pin += d;
+    setDots(pin.length);
+    if (pin.length === 4) attempt(pin);
+  }
+
+  function pressDel() {
+    if (busy || pin.length === 0) return;
+    pin = pin.slice(0, -1);
+    setDots(pin.length);
+  }
+
+  pad.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.pin-key');
+    if (!btn || btn.disabled) return;
+    if (btn.dataset.action === 'del') pressDel();
+    else if (btn.dataset.digit) pressDigit(btn.dataset.digit);
   });
 
-  // Auto-unlock from session cache (so refresh doesn't re-prompt).
+  // Hardware-keyboard support (desktop browsers).
+  document.addEventListener('keydown', (e) => {
+    if (lock.classList.contains('unlocked')) return;
+    if (e.key >= '0' && e.key <= '9') { e.preventDefault(); pressDigit(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); pressDel(); }
+  });
+
+  // Auto-unlock from session cache (refresh doesn't re-prompt).
   try {
     const cached = sessionStorage.getItem(SK);
     if (cached && /^\d{4}$/.test(cached)) {
-      setDots(4);
-      msg.textContent = 'Unlocking…';
-      handleAttempt(cached);
-    } else {
-      focusInput();
+      pin = cached;
+      attempt(cached);
     }
-  } catch (e) { focusInput(); }
+  } catch (e) { /* ignore */ }
 })();
 </script>
 </body>
